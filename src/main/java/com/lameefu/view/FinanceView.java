@@ -1,6 +1,7 @@
 package com.lameefu.view;
 
 import com.lameefu.model.FinancialEntry;
+import com.lameefu.service.FinancialEntryService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -25,7 +26,7 @@ import java.util.Locale;
 )
 public class FinanceView extends VerticalLayout {
 
-    public FinanceView() {
+    public FinanceView(FinancialEntryService financialEntryService) {
 
         H1 title =
                 new H1("Finanzübersicht");
@@ -40,69 +41,17 @@ public class FinanceView extends VerticalLayout {
                         Locale.GERMANY
                 );
 
-        FinancialEntry salary =
-                new FinancialEntry(
-                        "Gehalt",
-                        "Einnahme",
-                        3000
-                );
-
-        FinancialEntry rent =
-                new FinancialEntry(
-                        "Miete",
-                        "Ausgabe",
-                        900
-                );
-
-        FinancialEntry dividends =
-                new FinancialEntry(
-                        "Dividenden",
-                        "Einnahme",
-                        150
-                );
-
-        FinancialEntry groceries =
-                new FinancialEntry(
-                        "Lebensmittel",
-                        "Ausgabe",
-                        300
-                );
-
-        List<FinancialEntry> entries =
-                List.of(
-                        salary,
-                        rent,
-                        dividends,
-                        groceries
-                );
+        List<FinancialEntry> entries = financialEntryService.getAllEntries();
 
         // Gesamteinnahmen berechnen
-        double totalIncome =
-                entries.stream()
-                        .filter(entry ->
-                                entry.getType()
-                                        .equals("Einnahme")
-                        )
-                        .mapToDouble(
-                                FinancialEntry::getAmount
-                        )
-                        .sum();
+        double income = financialEntryService.calculateIncome();
+
 
         // Gesamtausgaben berechnen
-        double totalExpenses =
-                entries.stream()
-                        .filter(entry ->
-                                entry.getType()
-                                        .equals("Ausgabe")
-                        )
-                        .mapToDouble(
-                                FinancialEntry::getAmount
-                        )
-                        .sum();
+        double expenses = financialEntryService.calculateExpenses();
 
         // Saldo berechnen
-        double balance =
-                totalIncome - totalExpenses;
+        double balance = financialEntryService.calculateBalance();
 
         // Einnahmen anzeigen
         H3 incomeTitle =
@@ -110,7 +59,7 @@ public class FinanceView extends VerticalLayout {
 
         Span incomeValue =
                 new Span(
-                        currencyFormat.format(totalIncome)
+                        currencyFormat.format(income)
                 );
 
         VerticalLayout incomeLayout =
@@ -125,7 +74,7 @@ public class FinanceView extends VerticalLayout {
 
         Span expensesValue =
                 new Span(
-                        currencyFormat.format(totalExpenses)
+                        currencyFormat.format(expenses)
                 );
 
         VerticalLayout expensesLayout =

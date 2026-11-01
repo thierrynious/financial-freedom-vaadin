@@ -1,5 +1,6 @@
 package com.lameefu.view;
 
+import com.lameefu.service.AppInfoService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,13 +17,15 @@ import com.vaadin.flow.router.Route;
 @Route(value = "", layout = MainLayout.class)
 public class MainView extends VerticalLayout {
 
-    public MainView() {
+    public MainView(AppInfoService appInfoService) {
 
         H1 title =
                 new H1("Financial Freedom");
 
         Paragraph description =
                 new Paragraph("Dein Weg zur finanziellen Freiheit");
+
+        Paragraph backendInfo = new Paragraph(appInfoService.getApplicationInfo());
 
         Span info =
                 new Span("Baue Vermögen auf und erhöhe dein passives Einkommen.");
@@ -121,7 +124,7 @@ public class MainView extends VerticalLayout {
         add(
                 title,
                 description,
-                info,
+                backendInfo,
                 formLayout
         );
     }
